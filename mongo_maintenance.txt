@@ -1,0 +1,27 @@
+# exporting data
+mongoexport --db=twitter --collection=vanirFull --limit=100000 --skip=0 --out=20191216_19.json --jsonArray
+zip file19 20191216_19.json 
+mv file19 OneDrive/MScDataTweets/
+
+# Finding the last tweet in mongodb
+use twitter
+db.vanirFull.find().sort({_id:-1}).limit(1);
+
+# Finding the first tweet in mongodb
+use twitter
+db.vanirFull.find().sort({_id:1}).limit(1);
+
+# deleting data:
+# make sure we're looking at te correct database
+use twitter
+
+# frist need to get the ids of exported data in chunks of 50,000 (memory constraint)
+removalsArray = db.vanirFull.find({}).limit(50000).toArray().map(function(doc) {return doc._id;});
+
+# then remove the documents with the ids returned from the fundtion above
+db.vanirFull.remove({_id: {$in: removalsArray} })
+
+
+
+
+
